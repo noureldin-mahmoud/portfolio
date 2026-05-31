@@ -8,6 +8,7 @@ import { ProjectsSection } from './projects-section'
 import { Dock, type SectionId } from './dock'
 import { CvModal } from './cv-modal'
 import { ContactModal } from './contact-modal'
+import { Typewriter } from './typewriter'
 
 const sectionNames: Record<SectionId, string> = {
   home: 'Home',
@@ -18,10 +19,13 @@ const sectionNames: Record<SectionId, string> = {
 }
 
 function SectionOverlay({ name, onDone }: { name: string; onDone: () => void }) {
+  const [typed, setTyped] = useState(false)
+
   useEffect(() => {
-    const t = setTimeout(onDone, 1200)
+    // wait for typewriter to finish + a little extra
+    const t = setTimeout(onDone, name.length * 80 + 900)
     return () => clearTimeout(t)
-  }, [onDone])
+  }, [onDone, name])
 
   return (
     <motion.div
@@ -31,34 +35,36 @@ function SectionOverlay({ name, onDone }: { name: string; onDone: () => void }) 
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Glass backdrop */}
-      <div className="absolute inset-0 bg-background/40 backdrop-blur-xl" />
-      {/* Glow */}
-      <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-500/8" />
+      {/* glass */}
+      <div className="absolute inset-0 bg-background/50 backdrop-blur-2xl" />
+      {/* blue ambient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-indigo-500/10" />
+      {/* decorative rings */}
+      <motion.div animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 3, repeat: Infinity }}
+        className="absolute h-[400px] w-[400px] rounded-full border border-blue-400/20" />
+      <motion.div animate={{ scale: [1.05, 1, 1.05], opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 4, repeat: Infinity }}
+        className="absolute h-[600px] w-[600px] rounded-full border border-primary/10" />
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.85, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 1.1, y: -20 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 text-center"
+        className="relative z-10 text-center px-8"
       >
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="font-marker text-lg text-primary italic mb-1"
-        >
-          You are in
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
+          className="font-marker text-xl text-primary italic mb-2 opacity-70">
+          you are in
         </motion.p>
-        <motion.h2
-          className="font-display text-[15vw] sm:text-[10rem] leading-none tracking-tight"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        >
-          {name}
-        </motion.h2>
+        {/* Big name with marker font + typewriter */}
+        <h2 className="font-marker text-[18vw] sm:text-[12rem] leading-none tracking-tight text-foreground"
+          style={{ textShadow: '0 0 60px rgba(59,130,246,0.3)' }}>
+          <Typewriter text={name} speed={80} onDone={() => setTyped(true)} />
+        </h2>
+        {typed && (
+          <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5 }}
+            className="mt-4 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent" />
+        )}
       </motion.div>
     </motion.div>
   )
@@ -78,7 +84,6 @@ export function Portfolio() {
     const dark = stored ? stored === 'dark' : prefersDark
     setIsDark(dark)
     document.documentElement.classList.toggle('dark', dark)
-    // Show intro overlay on first load
     setOverlayName('Home')
     setShowOverlay(true)
   }, [])
@@ -102,8 +107,7 @@ export function Portfolio() {
   return (
     <main className="relative min-h-svh w-full overflow-x-hidden">
       <AnimatePresence mode="wait">
-        <motion.div
-          key={section}
+        <motion.div key={section}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -24 }}
@@ -115,22 +119,13 @@ export function Portfolio() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Section intro overlay */}
       <AnimatePresence>
         {showOverlay && (
           <SectionOverlay name={overlayName} onDone={() => setShowOverlay(false)} />
         )}
       </AnimatePresence>
 
-      <Dock
-        active={section}
-        onNavigate={navigate}
-        onOpenCv={() => setCvOpen(true)}
-        onOpenContact={() => setContactOpen(true)}
-        isDark={isDark}
-        onToggleTheme={toggleTheme}
-      />
-
+      <Dock active={section} onNavigate={navigate} onOpenCv={() => setCvOpen(true)} onOpenContact={() => setContactOpen(true)} isDark={isDark} onToggleTheme={toggleTheme} />
       <CvModal open={cvOpen} onClose={() => setCvOpen(false)} />
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
     </main>
