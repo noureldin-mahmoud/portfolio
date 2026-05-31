@@ -1,132 +1,125 @@
 'use client'
 
 import { AnimatePresence, motion } from 'motion/react'
-import {
-  X,
-  User,
-  GraduationCap,
-  Layers,
-  TrendingUp,
-  FolderGit2,
-} from 'lucide-react'
-import { cv, profile, stackGroups } from '@/lib/portfolio-data'
-
-function Section({
-  icon: Icon,
-  title,
-  children,
-}: {
-  icon: typeof User
-  title: string
-  children: React.ReactNode
-}) {
-  return (
-    <div className="border-t border-border py-6 first:border-t-0 first:pt-0">
-      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-        <Icon className="size-4 text-primary" />
-        {title}
-      </h3>
-      {children}
-    </div>
-  )
-}
+import { X, Mail, MapPin, Linkedin, Github } from 'lucide-react'
+import { cv, profile, stackGroups, socials } from '@/lib/portfolio-data'
 
 export function CvModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const allSkills = stackGroups.flatMap((g) => g.items)
+
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
-          className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <div
-            className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
-            onClick={onClose}
-            aria-hidden
-          />
+        <motion.div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
           <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Digital CV"
-            initial={{ y: 40, opacity: 0, scale: 0.98 }}
+            role="dialog" aria-modal="true"
+            initial={{ y: 40, opacity: 0, scale: 0.97 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 40, opacity: 0, scale: 0.98 }}
+            exit={{ y: 40, opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-10 max-h-[88svh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-border bg-card p-6 shadow-2xl sm:rounded-3xl sm:p-8"
+            className="relative z-10 max-h-[92svh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-white dark:bg-zinc-900 shadow-2xl sm:rounded-3xl"
           >
-            <div className="mb-6 flex items-start justify-between gap-4">
-              <div>
-                <span className="font-marker text-xl text-primary">Fast Report</span>
-                <h2 className="font-display text-3xl leading-none tracking-tight">
-                  {profile.firstName} {profile.lastName}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">{profile.role}</p>
+            {/* Header bar */}
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3">
+              <div className="flex items-center gap-2">
+                <span className="text-blue-500">📄</span>
+                <span className="text-sm font-semibold text-gray-600 dark:text-gray-300">Fast Report</span>
               </div>
-              <button
-                onClick={onClose}
-                aria-label="Close"
-                className="grid size-9 shrink-0 place-items-center rounded-xl border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              >
+              <button onClick={onClose} className="grid size-8 place-items-center rounded-full border border-gray-200 dark:border-zinc-700 text-gray-400 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors">
                 <X className="size-4" />
               </button>
             </div>
 
-            <Section icon={User} title="Overview">
-              <p className="text-pretty text-sm leading-relaxed text-foreground/80">
-                {cv.overview}
-              </p>
-            </Section>
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_220px] gap-0">
+              {/* Left column */}
+              <div className="p-6 sm:p-8 sm:border-r border-gray-100 dark:border-zinc-800">
+                {/* Name */}
+                <h2 className="font-display text-4xl sm:text-5xl font-black leading-none tracking-tight">
+                  <span className="text-foreground dark:text-white">{profile.firstName} </span>
+                  <span className="text-blue-500">{profile.lastName}</span>
+                </h2>
+                <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-blue-500">
+                  Full-Stack Engineer & Tech Entrepreneur
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+                  <span className="flex items-center gap-1"><Mail className="size-3" /> noureldeen.mahmoud.fathy@gmail.com</span>
+                  <span className="flex items-center gap-1"><MapPin className="size-3" /> Giza, Egypt</span>
+                </div>
 
-            <Section icon={GraduationCap} title="Academic">
-              <p className="text-sm font-semibold">{cv.academic.program}</p>
-              <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                {cv.academic.institutions.map((inst) => (
-                  <li key={inst}>• {inst}</li>
-                ))}
-              </ul>
-              <p className="mt-2 text-xs font-medium text-primary">
-                {cv.academic.timeline}
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {cv.academic.focus.map((f) => (
-                  <span
-                    key={f}
-                    className="rounded-lg bg-secondary px-2.5 py-1 text-xs font-medium"
-                  >
-                    {f}
-                  </span>
-                ))}
-              </div>
-            </Section>
+                {/* Overview */}
+                <div className="mt-6">
+                  <h3 className="mb-2 text-xs font-bold uppercase tracking-widest text-blue-500">Overview</h3>
+                  <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">{cv.overview}</p>
+                </div>
 
-            <Section icon={Layers} title="Stack">
-              <div className="flex flex-wrap gap-2">
-                {stackGroups
-                  .flatMap((g) => g.items)
-                  .map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-lg border border-border bg-secondary px-2.5 py-1 text-xs font-medium"
-                    >
-                      {item}
-                    </span>
+                {/* Projects */}
+                <div className="mt-6">
+                  <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-blue-500">Projects</h3>
+                  <p className="font-display text-4xl font-black tracking-tight text-gray-200 dark:text-zinc-700">SOON</p>
+                </div>
+
+                {/* Academic */}
+                <div className="mt-6">
+                  <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-blue-500">Academic Background</h3>
+                  <p className="text-sm font-bold text-gray-800 dark:text-white">{cv.academic.program}</p>
+                  {cv.academic.institutions.map((inst) => (
+                    <p key={inst} className="text-sm text-gray-500 dark:text-gray-400">{inst}</p>
                   ))}
+                  <p className="mt-1 inline-block rounded bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 text-xs font-semibold text-blue-500">{cv.academic.timeline}</p>
+                </div>
+
+                {/* Languages */}
+                <div className="mt-8 flex gap-6 text-xs font-bold uppercase tracking-widest text-gray-400">
+                  <span>English (Prof.)</span>
+                  <span>Arabic (Native)</span>
+                </div>
+                <p className="mt-1 text-[10px] uppercase tracking-widest text-gray-300 dark:text-zinc-600">
+                  Built with passion & Next.js · © 2026 Noureldin Mahmoud
+                </p>
               </div>
-            </Section>
 
-            <Section icon={FolderGit2} title="Projects">
-              <p className="font-display text-3xl tracking-tight text-foreground/80">
-                SOON
-              </p>
-            </Section>
+              {/* Right column */}
+              <div className="p-6 space-y-6">
+                {/* Stack */}
+                <div>
+                  <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-blue-500">Stack</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {allSkills.map((skill) => (
+                      <span key={skill} className="rounded-full border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
-            <Section icon={TrendingUp} title="Impact">
-              <p className="font-display text-3xl tracking-tight text-foreground/80">
-                SOON
-              </p>
-            </Section>
+                {/* Impact */}
+                <div>
+                  <h3 className="mb-2 text-xs font-bold uppercase tracking-widest text-blue-500">Impact</h3>
+                  <div className="space-y-1 text-xs text-gray-600 dark:text-gray-300">
+                    <p>Dual-degree student at <strong>CIC & CBU</strong>.</p>
+                    <p>Aspiring <strong>Tech Entrepreneur</strong>.</p>
+                    <p>Building <strong>scalable digital products</strong>.</p>
+                  </div>
+                </div>
+
+                {/* Connect */}
+                <div>
+                  <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-blue-500">Connect</h3>
+                  <div className="space-y-3">
+                    <a href="https://www.linkedin.com/in/noureldin-mahmoud-422612389/" target="_blank" rel="noreferrer"
+                      className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">
+                      <Linkedin className="size-4 text-gray-400" /> LinkedIn
+                    </a>
+                    <a href="https://github.com/noureldin-mahmoud" target="_blank" rel="noreferrer"
+                      className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">
+                      <Github className="size-4 text-gray-400" /> GitHub
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       )}
