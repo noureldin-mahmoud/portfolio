@@ -215,3 +215,39 @@
     animation: none;
   }
 }
+
+/* ── Enhanced blue glows for light mode ── */
+:root {
+  --glow-blue: rgba(59, 130, 246, 0.22);
+  --glow-indigo: rgba(99, 102, 241, 0.18);
+}
+.dark {
+  --glow-blue: rgba(59, 130, 246, 0.14);
+  --glow-indigo: rgba(99, 102, 241, 0.10);
+}
+
+/* ── Stronger hero glow both modes ── */
+.hero-glow {
+  background:
+    radial-gradient(ellipse 65% 55% at 50% 45%, color-mix(in oklch, var(--primary) 28%, transparent), transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 20%, rgba(59,130,246,0.15), transparent 60%),
+    radial-gradient(ellipse 35% 35% at 20% 80%, rgba(99,102,241,0.12), transparent 60%);
+}
+
+/* ── Spinning ring animation ── */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* ── Pulse glow ── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.08); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}

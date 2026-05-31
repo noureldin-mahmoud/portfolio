@@ -1,10 +1,3 @@
-/**
- * ============================================================
- *  EDIT YOUR PORTFOLIO CONTENT HERE
- *  غيّر بياناتك من المكان ده بس — كل النصوص والروابط هنا
- * ============================================================
- */
-
 export const profile = {
   preName: 'The Portfolio of',
   firstName: 'NOUR',
@@ -14,7 +7,7 @@ export const profile = {
   bio: 'Building scalable tech solutions and digital products. Managing code and business infrastructure to launch the next generation of startups.',
   location: 'Giza, Egypt',
   locationFlag: '🇪🇬',
-  available: true,
+  available: false,
   availabilityNote: 'Focused on work & study',
   photo: '/profile-photo.jpg',
 }
