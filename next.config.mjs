@@ -2,6 +2,7 @@
 const nextConfig = {
   output: 'export',
   basePath: '/portfolio',
+  productionBrowserSourceMaps: false,
   images: {
     unoptimized: true,
   },
