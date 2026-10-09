@@ -10,7 +10,7 @@ import { CvModal } from './cv-modal'
 import { ContactModal } from './contact-modal'
 import { Typewriter } from './typewriter'
 
-const sectionNames: Record<SectionId, string> = {
+const sectionNames: Record<string, string> = {
   home: 'Home',
   stack: 'Stack',
   projects: 'Projects',
